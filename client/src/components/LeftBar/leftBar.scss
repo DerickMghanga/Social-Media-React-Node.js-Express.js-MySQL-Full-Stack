@@ -1,0 +1,53 @@
+.leftBar {
+    flex: 1.8;
+    .container {
+        padding: 14px;
+
+        hr{
+            margin: 12px 0px;
+            border: none;
+            height: 0.5px;
+            background-color: lightgrey;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .user {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                img {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+
+                span {
+                    font-size: 14px;
+                }
+            }
+
+            .s-head {
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                img {
+                    width: 24px;
+                }
+
+                span {}
+            }
+        }
+    }
+}

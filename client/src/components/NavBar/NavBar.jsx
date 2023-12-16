@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 const NavBar = () => {
   return (
     <div className='navbar'>
+
       <div className="left">
         <Link to="/" style={{textDecoration: "none"}}>
           <span>deroo social</span>
@@ -20,8 +21,21 @@ const NavBar = () => {
         <HomeOutlinedIcon />
         <DarkModeOutlinedIcon />
         <GridViewOutlinedIcon />
+        <div className="search">
+          <SearchOutlinedIcon />
+          <input type="text" placeholder="Search..."/>
+        </div>
       </div>
-      <div className="right"></div>
+
+      <div className="right">
+        <PersonOutlineOutlinedIcon />
+        <EmailOutlinedIcon />
+        <NotificationsOutlinedIcon />
+        <div className="user">
+          <img src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" />
+          <span>John Doe</span>
+        </div>
+      </div>
     </div>
   )
 }
