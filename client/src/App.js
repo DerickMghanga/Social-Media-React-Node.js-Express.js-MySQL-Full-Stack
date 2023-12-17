@@ -5,6 +5,7 @@ import NavBar from "./components/NavBar/NavBar";
 import LeftBar from "./components/LeftBar/LeftBar";
 import RightBar from "./components/RightBar/RightBar";
 import Profile from "./pages/profile/Profile";
+import "./style.scss"
 
 import {
   createBrowserRouter,
@@ -20,7 +21,7 @@ function App() {
   // COMMON LAYOUT FOR ALL PAGES(navbar, leftbar, rightbar)
   const Layout = () => {
     return (
-      <div>
+      <div className="theme-dark">
         <NavBar />
         <div style={{ display: "flex" }}>
           <LeftBar />
