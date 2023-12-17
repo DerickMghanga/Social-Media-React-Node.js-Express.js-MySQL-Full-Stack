@@ -1,7 +1,16 @@
 .leftBar {
     flex: 1.8;
+    position: sticky;
+    top: 71px;
+    height: calc(100vh - 70px);
+    overflow: scroll;
+
+    &::-webkit-scrollbar{
+        display: none;
+    }
+
     .container {
-        padding: 14px;
+        padding: 15px;
 
         hr{
             margin: 12px 0px;
