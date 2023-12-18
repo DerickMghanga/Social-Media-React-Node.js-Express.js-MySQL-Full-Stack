@@ -11,7 +11,7 @@ export const AuthContextProvider = ({children}) => {
     const logIn = () =>{
         //TO DO
 
-        setCurrentUser({id:1, name: "John Doe", profilePic:"https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"});
+        setCurrentUser({id:1, name: "Cynthia Doe", profilePic:"https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"});
     }
 
     //updates the stored Object of user info incase it changes
