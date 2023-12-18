@@ -12,7 +12,7 @@ export const DarkModeContextProvider = ({children}) => {
         setDarkMode(!darkMode);
     }
 
-    //set the setting once the user changes to/from darkMode
+    //updates the stored value of darkMode incase it changes    
     useEffect(()=> {
         localStorage.setItem("darkMode", darkMode);
     },[darkMode])

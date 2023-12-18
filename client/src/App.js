@@ -15,10 +15,11 @@ import {
 } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
+import { AuthContext } from "./context/authContext";
 
 function App() {
   // temporary functionality
-  const currentUser = true;
+  const {currentUser} = useContext(AuthContext);
 
   //darkmode setting from provider(localstorage)
   const {darkMode} = useContext(DarkModeContext);
