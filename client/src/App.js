@@ -13,15 +13,20 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
+import { useContext } from "react";
+import { DarkModeContext } from "./context/darkModeContext";
 
 function App() {
   // temporary functionality
   const currentUser = true;
 
+  //darkmode setting from provider(localstorage)
+  const {darkMode} = useContext(DarkModeContext);
+
   // COMMON LAYOUT FOR ALL PAGES(navbar, leftbar, rightbar)
   const Layout = () => {
     return (
-      <div className="theme-dark">
+      <div className={`theme-${darkMode ? "dark": "light"}`}>
         <NavBar />
         <div style={{ display: "flex" }}>
           <LeftBar />
