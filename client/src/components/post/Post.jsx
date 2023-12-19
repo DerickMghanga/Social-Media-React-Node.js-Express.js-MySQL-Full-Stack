@@ -6,8 +6,12 @@ import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Link } from 'react-router-dom'
 import { useState } from "react";
+import Comments from "../Comments/Comments";
 
 const Post = ({ post }) => {
+
+    //COMMENTS CONDITION
+    const [commentOpen, SetCommentOpen] = useState(false);
 
     //TEMPORARY FXN
     const [liked, setLiked] = useState(false);
@@ -46,7 +50,8 @@ const Post = ({ post }) => {
                         112 likes
                     </div>
 
-                    <div className="item">
+                    <div className="item" 
+                        onClick={()=> SetCommentOpen(!commentOpen)}>
                         <TextsmsIcon />
                         12 comments
                     </div>
@@ -57,7 +62,10 @@ const Post = ({ post }) => {
                     </div>
                 </div>
 
-                
+                {/* IF "commentOpen" True show the comments */}
+                {
+                  commentOpen && <Comments />
+                }
             </div>
         </div>
     )
