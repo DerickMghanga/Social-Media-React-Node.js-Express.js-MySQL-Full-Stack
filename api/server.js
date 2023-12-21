@@ -1,5 +1,5 @@
-import Express  from "express";
-const app = Express();
+import express  from "express";
+const app = express();
 const PORT = 8800;
 
 import userRoutes from "./routes/users.js";
@@ -8,6 +8,9 @@ import commentRoutes from "./routes/comments.js";
 import likeRoutes from "./routes/likes.js";
 import postRoutes from "./routes/posts.js";
 
+
+//middlewares
+app.use(express.json());
 
 
 // ROUTES
