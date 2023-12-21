@@ -1,5 +1,6 @@
 import { db } from "../connect.js";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken';
 
 
 //REGISTER USER
@@ -43,22 +44,36 @@ export const register = (req, res) => {
 //LOGIN USER
 export const login = (req, res) => {
     const {username, password} = req.body;
+    console.log(req.body);
 
     const q = "SELECT * FROM users WHERE username = ?";
 
     db.query(q, [username, password], (err, data) => {  //returns 'data' as an array
         if(err) return res.status(500).json(err);
 
-        if (data.length === 0) return response.status(404).json({message: "User not found!"});
+        if (data.length === 0) return res.status(404).json({message: "User not found!"});
 
-        const checkPassword = bcrypt.compareSync(password, data[0].password);
+        const checkPassword = bcrypt.compareSync(req.body.password, data[0].password);
 
         if(!checkPassword) return res.status(401).json({message: "Wrong Password or Username!"});
+
+        //create token(for user functionality ie delete post, like post, comment etc)
+        const token = jwt.sign({id: data[0].id}, process.env.TOKEN_SECRET);
+
+        //desctructure user Info(data[0]), only send back data without password 
+        const {password, ...others} = data[0]
+
+        res.cookie("accessToken", token, {
+            httpOnly: true,
+        }).status(200).json(others);
     })
 }
 
 
 //LOGOUT USER
 export const logout = (req, res) => {
-
+    res.clearCookie("accessToken", {
+        secure: true,
+        sameSite: "none",
+    }).status(200).json({message: "User Logout successfull!"});
 }
