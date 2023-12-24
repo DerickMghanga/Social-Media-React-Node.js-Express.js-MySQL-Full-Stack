@@ -12,6 +12,8 @@ const Register = () => {
     password: "",
   })
 
+  const [err, setErr] = useState("" || null);
+
   //set initial values and the updated ones while typing
   const handleChange = (e) => {
     setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));  
@@ -22,9 +24,13 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      // await axios.post("")
+      await axios.post("http://localhost:8800/api/auth/register", inputs)
+      .then((res)=> {
+        console.log(res.data);
+      })
     } catch (error) {
-      
+      console.log(error.response.data.message );
+      setErr(error.response.data.message );
     }
   }
 
@@ -58,6 +64,12 @@ const Register = () => {
             <input type="password" placeholder="Password"
               name="password" onChange={handleChange}
             />
+
+            {
+              err && (
+                <span>{err}!!</span>
+              )
+            }
             <button onClick={handleClick}>Register</button>
           </form>
         </div>
