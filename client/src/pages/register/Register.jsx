@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./register.scss"
 import { useState } from "react"
 import axios from "axios"
@@ -13,6 +13,7 @@ const Register = () => {
   })
 
   const [err, setErr] = useState("" || null);
+  const navigate = useNavigate();
 
   //set initial values and the updated ones while typing
   const handleChange = (e) => {
@@ -26,11 +27,12 @@ const Register = () => {
     try {
       await axios.post("http://localhost:8800/api/auth/register", inputs)
       .then((res)=> {
-        console.log(res.data);
+        //console.log(res.data);
+        navigate("/login");
       })
     } catch (error) {
-      console.log(error.response.data.message );
-      setErr(error.response.data.message );
+      //console.log(error.response.data.message );
+      setErr(error.response.data.message);
     }
   }
 
@@ -67,7 +69,7 @@ const Register = () => {
 
             {
               err && (
-                <span>{err}!!</span>
+                <span style={{color: "red"}}>{err}!!</span>
               )
             }
             <button onClick={handleClick}>Register</button>

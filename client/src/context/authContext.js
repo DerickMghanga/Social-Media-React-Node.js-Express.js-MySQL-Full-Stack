@@ -1,4 +1,6 @@
+import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { redirect } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -8,10 +10,15 @@ export const AuthContextProvider = ({children}) => {
     const [currentUser, setCurrentUser] = useState(
         JSON.parse(localStorage.getItem("user")) || null);
 
-    const logIn = () =>{
-        //TO DO
-
-        setCurrentUser({id:1, name: "Cynthia Doe", profilePic:"https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"});
+    
+    //Login page functionality
+    const logIn = async(inputs) =>{
+        await axios.post("http://localhost:8800/api/auth/login", inputs, {
+            withCredentials: true,
+        }).then((res)=>{
+            console.log(res.data);
+            setCurrentUser(res.data);
+        })
     }
 
     //updates the stored Object of user info incase it changes

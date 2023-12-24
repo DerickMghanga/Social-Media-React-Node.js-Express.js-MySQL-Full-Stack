@@ -1,14 +1,36 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./login.scss"
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 
 const LogIn = () => {
 
-  const {logIn} = useContext(AuthContext);
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  })
 
-  const handleLogIn = () =>{
-    logIn()
+  const [err, setErr] = useState("" || null);
+  const navigate = useNavigate();
+
+  //set initial values and the updated ones while typing
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+  // console.log(inputs)
+
+  const { logIn } = useContext(AuthContext);
+
+  const handleLogIn = async(e) => {
+    e.preventDefault();
+
+    try {
+      await logIn(inputs);
+      navigate("/");
+    } catch (error) {
+      console.log(error.response);
+      setErr(error.response.data.message);
+    }
   }
 
   return (
@@ -29,9 +51,19 @@ const LogIn = () => {
         <div className="right">
           <h1>Login</h1>
           <form action="">
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <button onClick={()=> handleLogIn()}>Login</button>
+            <input type="text" placeholder="Username" name="username"
+              onChange={handleChange}
+            />
+            <input type="password" placeholder="Password" name="password"
+              onChange={handleChange}
+            />
+
+            {
+              err && (
+                <span style={{color: "red"}}>{err}!!</span>
+              )
+            }
+            <button onClick={handleLogIn}>Login</button>
           </form>
         </div>
       </div>

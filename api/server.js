@@ -1,7 +1,6 @@
 import express  from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
 import 'dotenv/config';   //new ES6 way
 
 import userRoutes from "./routes/users.js";
@@ -16,10 +15,15 @@ const PORT = process.env.PORT;
 
 
 //middlewares
-app.use(cors());
+app.use((req, res, next)=>{
+    res.header("Access-Control-Allow-Credentials", true);
+    next();
+})
+app.use(cors({
+    origin: "http://localhost:3000",
+}));
 app.use(cookieParser());
 app.use(express.json());
-// app.use(bodyParser())
 
 
 
