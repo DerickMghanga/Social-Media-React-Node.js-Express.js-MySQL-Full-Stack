@@ -99,7 +99,7 @@ const Share = () => {
                     </div>
 
                     <div className="right">
-                        <button onClick={() => { handleShare(); setDesc(""); }}>Share</button>
+                        <button onClick={() => { handleShare(); setDesc(""); setFile(null); }}>Share</button>
                     </div>
                 </div>
             </div>

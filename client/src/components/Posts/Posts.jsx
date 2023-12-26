@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 
 const Posts = () => {
 
-  const { isLoading, error, data } = useQuery('posts', () =>
+  const { isLoading, error, data } = useQuery(['posts'], () =>
     makeRequest.get("/posts").then((res)=> {
       // console.log(res.data);
       return res.data;
@@ -22,7 +22,7 @@ const Posts = () => {
         (isLoading? "Loading" :
         data.map((post) => (
           <Post post={post} key={post.id} />
-        )))
+        )).reverse())
       }
     </div>
   )
