@@ -5,7 +5,7 @@ import NavBar from "./components/NavBar/NavBar";
 import LeftBar from "./components/LeftBar/LeftBar";
 import RightBar from "./components/RightBar/RightBar";
 import Profile from "./pages/profile/Profile";
-import "./style.scss"
+import "./style.scss";
 
 import {
   createBrowserRouter,
@@ -16,29 +16,35 @@ import {
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 function App() {
   // temporary functionality
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
 
   //darkmode setting from provider(localstorage)
-  const {darkMode} = useContext(DarkModeContext);
+  const { darkMode } = useContext(DarkModeContext);
+
+  // Create a client
+  const queryClient = new QueryClient();
 
   // COMMON LAYOUT FOR ALL PAGES(navbar, leftbar, rightbar)
   const Layout = () => {
     return (
-      <div className={`theme-${darkMode ? "dark": "light"}`}>
-        <NavBar />
-        <div style={{ display: "flex" }}>
-          <LeftBar />
+      <QueryClientProvider client={queryClient}>
+        <div className={`theme-${darkMode ? "dark" : "light"}`}>
+          <NavBar />
+          <div style={{ display: "flex" }}>
+            <LeftBar />
 
-          <div style={{flex: 6}}>
-            <Outlet />
+            <div style={{ flex: 6 }}>
+              <Outlet />
+            </div>
+
+            <RightBar />
           </div>
-
-          <RightBar />
         </div>
-      </div>
+      </QueryClientProvider>
     );
   };
 
