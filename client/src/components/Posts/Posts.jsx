@@ -22,7 +22,7 @@ const Posts = () => {
         (isLoading? "Loading" :
         data.map((post) => (
           <Post post={post} key={post.id} />
-        )).reverse())
+        )))
       }
     </div>
   )

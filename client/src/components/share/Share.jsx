@@ -16,8 +16,23 @@ const Share = () => {
 
     const queryClient = useQueryClient();
 
-    // Mutations
-    const mutation = useMutation((newPost)=> {
+    //upload to backend and Database
+    const upload = async () => {
+        try {
+            const formData = new FormData();
+
+            formData.append("file", file);
+
+            const res = await makeRequest.post("/upload", formData);
+
+            return res.data
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Mutations - Add post to DB and Refetch all Posts
+    const mutation = useMutation((newPost) => {
         return makeRequest.post("/posts", newPost);
     }, {
         onSuccess: () => {
@@ -27,10 +42,14 @@ const Share = () => {
     })
 
     // share post
-    const handleShare = (e) => {
+    const handleShare = async (e) => {
         // e.preventDefault();
 
-        mutation.mutate({desc});
+        let imgUrl = "";
+
+        if (file) imgUrl = await upload();  //if user added a file
+
+        mutation.mutate({ desc, img: imgUrl });
     }
 
     return (
@@ -47,7 +66,9 @@ const Share = () => {
                     </div>
 
                     <div className="right">
-
+                        {
+                            file && <img className="file" src={URL.createObjectURL(file)} alt="" />
+                        }
                     </div>
                 </div>
 
@@ -56,7 +77,6 @@ const Share = () => {
                 <div className="bottom">
                     <div className="left">
                         <input type="file" id="file" style={{ display: "none" }}
-                            value={file}
                             onChange={(e) => setFile(e.target.files[0])}
                         />
 
@@ -79,7 +99,7 @@ const Share = () => {
                     </div>
 
                     <div className="right">
-                        <button onClick={()=> {handleShare(); setDesc("");}}>Share</button>
+                        <button onClick={() => { handleShare(); setDesc(""); }}>Share</button>
                     </div>
                 </div>
             </div>
