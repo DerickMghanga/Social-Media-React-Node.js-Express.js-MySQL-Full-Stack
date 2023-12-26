@@ -2,21 +2,47 @@ import "./share.scss"
 import Image from "../../assets/img.png";
 import Map from "../../assets/map.png";
 import Friend from "../../assets/friend.png";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
+import { useMutation, useQueryClient } from 'react-query';
+import { makeRequest } from "../../axios";
 
 const Share = () => {
 
+    const [file, setFile] = useState(null);
+    const [desc, setDesc] = useState("");
+
     const { currentUser } = useContext(AuthContext);
+
+    const queryClient = useQueryClient();
+
+    // Mutations
+    const mutation = useMutation((newPost)=> {
+        return makeRequest.post("/posts", newPost);
+    }, {
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries(['posts'])  //updates the posts list(Posts.jsx)
+        },
+    })
+
+    // share post
+    const handleShare = (e) => {
+        // e.preventDefault();
+
+        mutation.mutate({desc});
+    }
 
     return (
         <div className="share">
             <div className="container">
                 <div className="top">
                     <div className="left">
-                        <img src={currentUser.profilePic} />
+                        <img src={currentUser.profilePic} alt="" />
                         <input type="text"
                             placeholder={`What's on your mind ${currentUser.name}?`}
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
                         />
                     </div>
 
@@ -25,32 +51,35 @@ const Share = () => {
                     </div>
                 </div>
 
-                <hr/>
+                <hr />
 
                 <div className="bottom">
                     <div className="left">
-                        <input type="file" id="file" style={{display: "none"}} />
+                        <input type="file" id="file" style={{ display: "none" }}
+                            value={file}
+                            onChange={(e) => setFile(e.target.files[0])}
+                        />
 
                         <label htmlFor="file">
                             <div className="item">
-                                <img src={Image} alt=""/>
+                                <img src={Image} alt="" />
                                 <span>Add Image</span>
                             </div>
                         </label>
 
                         <div className="item">
-                            <img src={Map} alt=""/>
+                            <img src={Map} alt="" />
                             <span>Add Place</span>
                         </div>
 
                         <div className="item">
-                            <img src={Friend} alt=""/>
+                            <img src={Friend} alt="" />
                             <span>Tag Friends</span>
                         </div>
                     </div>
 
                     <div className="right">
-                        <button>Share</button>
+                        <button onClick={()=> {handleShare(); setDesc("");}}>Share</button>
                     </div>
                 </div>
             </div>

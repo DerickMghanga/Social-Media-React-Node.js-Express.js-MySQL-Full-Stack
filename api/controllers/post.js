@@ -1,5 +1,6 @@
 import { db } from "../connect.js";
 import jwt from "jsonwebtoken";
+import moment from 'moment';
 
 export const getPosts = (req, res) => {
   //console.log(req.cookies.accessToken);
@@ -24,6 +25,7 @@ export const getPosts = (req, res) => {
 
 //Add New Post
 export const addPost = (req, res) => {
+    const {desc, img} = req.body;
     const token = req.cookies.accessToken;
 
     if (!token) return res.status(401).json({ message: "Not logged in!" });
@@ -33,12 +35,19 @@ export const addPost = (req, res) => {
   
       //console.log(userInfo);
   
-      const q = `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) LEFT JOIN relationships AS r ON (p.userId = r.followedUserId) WHERE r.followerUserId = ? OR p.userId = ?`;
+      const q = "INSERT INTO posts (`desc`, `img`, `userId`, `createdAt`) VALUES (?)"
+
+      const values = [
+        desc,
+        img,
+        userInfo.id,
+        moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+      ]
   
-      db.query(q, [userInfo.id, userInfo.id], (err, data) => {
+      db.query(q, [values], (err, data) => {
         if (err) return res.status(500).json(err);
   
-        return res.status(200).json(data);
+        return res.status(200).json({message: "Post has been created!"});
       });
     });
 }

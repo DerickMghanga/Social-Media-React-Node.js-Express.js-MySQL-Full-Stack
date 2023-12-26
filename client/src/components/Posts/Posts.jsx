@@ -13,7 +13,7 @@ const Posts = () => {
     })
   )
 
-  console.log(data);
+  //console.log(data);
 
   return (
     <div className='posts'>
@@ -22,7 +22,7 @@ const Posts = () => {
         (isLoading? "Loading" :
         data.map((post) => (
           <Post post={post} key={post.id} />
-        )))
+        )).reverse())
       }
     </div>
   )
