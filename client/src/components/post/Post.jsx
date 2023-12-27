@@ -48,7 +48,7 @@ const Post = ({ post }) => {
                 <div className="info">
                     <div className="item" onClick={()=>toggle()}>
                         {
-                            liked ? <FavoriteIcon /> : <FavoriteBorderIcon/>
+                            liked ? <FavoriteIcon style={{color: "red"}} /> : <FavoriteBorderIcon/>
                         }
                         112 likes
                     </div>
@@ -67,7 +67,7 @@ const Post = ({ post }) => {
 
                 {/* IF "commentOpen" True show the comments */}
                 {
-                  commentOpen && <Comments />
+                  commentOpen && <Comments postId={post.id} />
                 }
             </div>
         </div>

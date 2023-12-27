@@ -1,46 +1,65 @@
-import { useContext } from "react"
-import {AuthContext} from "../../context/authContext"
+import { useContext, useState } from "react"
+import { AuthContext } from "../../context/authContext"
 import "./comments.scss"
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { makeRequest } from "../../axios";
+import moment from "moment";
 
-const Comments = () => {
+const Comments = ({ postId }) => {
+    //console.log(postId);
 
-    const {currentUser} = useContext(AuthContext);
+    const [desc, setDesc] = useState("");
 
-    //DUMMY COMMENTS
-    const comments = [
-        {
-            id: 1,
-            name: "Alex Doe",
-            userId: 1,
-            profilePic: "https://images.pexels.com/photos/4236830/pexels-photo-4236830.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-            desc: "Morbi mollis tellus ac sapien. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Praesent ut ligula non mi varius sagittis.Aliquam erat volutpat. Praesent adipiscing. Etiam rhoncus.Praesent blandit laoreet nibh. Aliquam erat volutpat. Fusce neque.",
+    const { currentUser } = useContext(AuthContext);
+    const queryClient = useQueryClient();
+
+    const { isLoading, error, data } = useQuery(['comments'], () =>
+        makeRequest.get("/comments?postId=" + postId).then((res) => {
+            // console.log(res.data);
+            return res.data;
+        })
+    )
+    //console.log(data);
+
+
+    // Mutations - Add comment to post and Refetch all comments
+    const mutation = useMutation((newComment) => {
+        return makeRequest.post("/comments", newComment);
+    }, {
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries(['comments']) //updates the comments list
         },
-        {
-            id: 2,
-            name: "Kunta Kinte",
-            userId: 2,
-            profilePic: "https://images.pexels.com/photos/4049870/pexels-photo-4049870.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-            desc: "Fusce convallis metus id felis luctus adipiscing. Ut id nisl quis enim dignissim sagittis. Sed in libero ut nibh placerat accumsan.Aenean commodo ligula eget dolor. Cras varius. Praesent congue erat at massa.Ut leo. Suspendisse eu ligula. Morbi ac felis.Nullam vel sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Nunc nec neque.",
-        }
-    ]
+    })
+
+    // add comment
+    const handleShare = async() => {
+
+        mutation.mutate({ desc, postId });
+        setDesc("");
+    }
 
     return (
         <div className="comments">
             <div className="write">
                 <img src={currentUser.profilePic} alt="" />
-                <input type="text" placeholder="Write a comment..." />
-                <button>Send</button>
+                <input type="text" placeholder="Write a comment..."
+                    value={desc} onChange={(e)=>setDesc(e.target.value)}
+                />
+                <button onClick={handleShare}>
+                    Send
+                </button>
             </div>
 
             {
-                comments.map(comment => (
+                isLoading ? "Loading..." : data.map(comment => (
                     <div key={comment.id} className="comment">
                         <img src={comment.profilePic} alt="" />
                         <div className="info">
                             <span>{comment.name}</span>
                             <p>{comment.desc}</p>
                         </div>
-                        <span className="date">1 hour ago</span>
+                        <span className="date">{moment(comment.createdAt).fromNow()}</span>
                     </div>
                 ))
             }
