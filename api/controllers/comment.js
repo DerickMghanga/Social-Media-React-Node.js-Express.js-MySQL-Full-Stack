@@ -4,7 +4,7 @@ import moment from "moment";
 
 //fetch comments per post
 export const getComments = (req, res) => {
-    console.log(req.query);
+    //console.log(req.query);
     const { postId } = req.query;
 
     const q = `SELECT c.*, u.id AS userId, name, profilePic FROM comments AS c JOIN users AS u ON (u.id = c.userId) WHERE c.postId = (?) ORDER BY c.createdAt DESC`;

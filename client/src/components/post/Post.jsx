@@ -5,21 +5,29 @@ import TextsmsIcon from '@mui/icons-material/Textsms';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Link } from 'react-router-dom'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Comments from "../Comments/Comments";
 import moment from "moment";
+import { useMutation, useQuery } from "react-query";
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/authContext";
 
 const Post = ({ post }) => {
+
+    const {currentUser} = useContext(AuthContext)
 
     //COMMENTS CONDITION
     const [commentOpen, SetCommentOpen] = useState(false);
 
-    //TEMPORARY FXN
-    const [liked, setLiked] = useState(false);
-
-    const toggle = () => {
-        setLiked(!liked);
-    }
+    //fetch Likes count
+    const { isLoading, error, data } = useQuery(['likes', post.id], () =>
+        makeRequest.get("/likes?postId=" + post.id).then((res) => {
+            // console.log(res.data);
+            return res.data;
+        })
+    )
+    console.log(data);
+    
 
     return (
         <div className="post">
@@ -46,11 +54,11 @@ const Post = ({ post }) => {
                 </div>
 
                 <div className="info">
-                    <div className="item" onClick={()=>toggle()}>
+                    <div className="item" >
                         {
-                            liked ? <FavoriteIcon style={{color: "red"}} /> : <FavoriteBorderIcon/>
+                            data?.includes(currentUser.id) ? <FavoriteIcon style={{color: "red"}} /> : <FavoriteBorderIcon/>
                         }
-                        112 likes
+                        {data?.length} likes
                     </div>
 
                     <div className="item" 
