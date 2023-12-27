@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom'
 import { useContext, useState } from "react";
 import Comments from "../Comments/Comments";
 import moment from "moment";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/authContext";
 
 const Post = ({ post }) => {
 
-    const {currentUser} = useContext(AuthContext)
+    const { currentUser } = useContext(AuthContext)
 
     //COMMENTS CONDITION
     const [commentOpen, SetCommentOpen] = useState(false);
@@ -26,8 +26,26 @@ const Post = ({ post }) => {
             return res.data;
         })
     )
-    console.log(data);
-    
+    //console.log(data);
+
+    const queryClient = useQueryClient();
+
+    // Mutations - Add like to post and Refetch all likes
+    const mutation = useMutation((liked) => {
+        if (liked) return makeRequest.post("/likes", post.id);
+        
+        return makeRequest.post("/likes", {postId: post.id});
+    }, {
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries(['likes']) //updates the comments list
+        },
+    })
+
+    const handleLike = () => {
+
+    }
+
 
     return (
         <div className="post">
@@ -56,13 +74,16 @@ const Post = ({ post }) => {
                 <div className="info">
                     <div className="item" >
                         {
-                            data?.includes(currentUser.id) ? <FavoriteIcon style={{color: "red"}} /> : <FavoriteBorderIcon/>
+                            data?.includes(currentUser.id) ?
+                                <FavoriteIcon style={{ color: "red" }} onClick={handleLike} />
+                                :
+                                <FavoriteBorderIcon onClick={handleLike} />
                         }
                         {data?.length} likes
                     </div>
 
-                    <div className="item" 
-                        onClick={()=> SetCommentOpen(!commentOpen)}>
+                    <div className="item"
+                        onClick={() => SetCommentOpen(!commentOpen)}>
                         <TextsmsIcon />
                         12 comments
                     </div>
@@ -75,7 +96,7 @@ const Post = ({ post }) => {
 
                 {/* IF "commentOpen" True show the comments */}
                 {
-                  commentOpen && <Comments postId={post.id} />
+                    commentOpen && <Comments postId={post.id} />
                 }
             </div>
         </div>

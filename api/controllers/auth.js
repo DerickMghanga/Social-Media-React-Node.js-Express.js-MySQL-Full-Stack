@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 //REGISTER USER
 export const register = (req, res) => {
 
-    console.log(req.body);
+    //console.log(req.body);
 
     const {username, email, password, name} = req.body;
 
@@ -44,7 +44,7 @@ export const register = (req, res) => {
 //LOGIN USER
 export const login = (req, res) => {
     const {username, password} = req.body;
-    console.log(req.body);
+    //console.log(req.body);
 
     const q = "SELECT * FROM users WHERE username = ?";
 
