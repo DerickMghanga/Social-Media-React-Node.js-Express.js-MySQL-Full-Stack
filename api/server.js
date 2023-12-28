@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth.js";
 import commentRoutes from "./routes/comments.js";
 import likeRoutes from "./routes/likes.js";
 import postRoutes from "./routes/posts.js";
+import relationshipsRoutes from "./routes/relationships.js";
 import uploadRoute from "./routes/upload.js";
 
 
@@ -17,7 +18,7 @@ const PORT = process.env.PORT;
 
 //middlewares
 app.use((req, res, next)=>{
-    res.header("Access-Control-Allow-Credentials", true);
+    res.header("Access-Control-Allow-Credentials", true);  //allow withCredentials from client
     next();
 })
 app.use(cors({
@@ -36,6 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
+app.use('/api/relationships', relationshipsRoutes);
 app.use('/api/upload', uploadRoute);
 
 
