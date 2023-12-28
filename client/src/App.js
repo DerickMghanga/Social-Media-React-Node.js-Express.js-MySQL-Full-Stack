@@ -19,7 +19,7 @@ import { AuthContext } from "./context/authContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 function App() {
-  // temporary functionality
+
   const { currentUser } = useContext(AuthContext);
 
   //darkmode setting from provider(localstorage)
@@ -31,7 +31,6 @@ function App() {
   // COMMON LAYOUT FOR ALL PAGES(navbar, leftbar, rightbar)
   const Layout = () => {
     return (
-      <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <NavBar />
           <div style={{ display: "flex" }}>
@@ -44,7 +43,6 @@ function App() {
             <RightBar />
           </div>
         </div>
-      </QueryClientProvider>
     );
   };
 
@@ -63,7 +61,9 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoutes>
-          <Layout />
+          <QueryClientProvider client={queryClient}>
+            <Layout />
+          </QueryClientProvider>
         </ProtectedRoutes>
       ),
       children: [

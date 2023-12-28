@@ -19,7 +19,7 @@ export const getComments = (req, res) => {
 
 //Add new comment in a Post
 export const addComment = (req, res) => {
-    console.log()
+    //console.log()
     const {desc, postId} = req.body;
     const token = req.cookies.accessToken;
 

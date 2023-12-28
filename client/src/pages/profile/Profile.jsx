@@ -10,14 +10,41 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Posts from "../../components/Posts/Posts";
 
 import "./profile.scss"
+import { useQuery } from 'react-query';
+import { makeRequest } from '../../axios';
+import { useLocation } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/authContext';
+//import { useParams } from 'react-router-dom';
 
 const Profile = () => {
+
+  //  const {id} = useParams();
+  //  console.log(id);
+ 
+  const { currentUser } = useContext(AuthContext);   // 'id' is a number
+
+  const userId = parseInt(useLocation().pathname.split("/")[2]);
+
+  //fetch profile details
+  const { isLoading, error, data } = useQuery(['user'], () =>
+    makeRequest.get(`/users/find/${userId}`).then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+  )
+  //console.log(data)
+
+  const handleFollow = () => {
+    
+  }
+
   return (
     <div className="profile">
       <div className="images">
-        <img src="https://images.pexels.com/photos/1036804/pexels-photo-1036804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" className='cover' />
+        <img src={data?.coverPic} alt="" className='cover' />
 
-        <img src="https://images.pexels.com/photos/3367850/pexels-photo-3367850.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" className='profilePic' />
+        <img src={data?.profilePic} alt="" className='profilePic' />
       </div>
 
       <div className="profileContainer">
@@ -41,21 +68,26 @@ const Profile = () => {
           </div>
 
           <div className="center">
-            <span className='name'>John Doe</span>
+            <span className='name'>{data?.name}</span>
 
             <div className="info">
               <div className="item">
                 <PlaceIcon />
-                <span>USA</span>
+                <span>{data?.city}</span>
               </div>
 
               <div className="item">
                 <LanguageIcon />
-                <span>derickmg.dev</span>
+                <span>{data?.website}</span>
               </div>
             </div>
 
-            <button>Follow</button>
+            {
+              userId === currentUser.id ? 
+              <button>Update</button>
+              : 
+              <button onClick={handleFollow}>Follow</button>
+            }
           </div>
 
           <div className="right">
@@ -63,7 +95,7 @@ const Profile = () => {
             <MoreHorizIcon />
           </div>
         </div>
-        
+
         <Posts />
       </div>
     </div>

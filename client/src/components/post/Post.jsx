@@ -38,12 +38,13 @@ const Post = ({ post }) => {
     }, {
         onSuccess: () => {
             // Invalidate and refetch
-            queryClient.invalidateQueries(['likes']) //updates the comments list
+            queryClient.invalidateQueries(['likes']) //updates the likes
         },
     })
 
     const handleLike = () => {
         mutation.mutate(data.includes(currentUser.id)); //'includes' returns true or false
+                                                        // True if 'liked'(id included in 'data' array)
     }
 
 
