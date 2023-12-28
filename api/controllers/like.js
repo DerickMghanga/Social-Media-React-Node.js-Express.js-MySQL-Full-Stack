@@ -44,7 +44,8 @@ export const addLike = (req, res) => {
 }
 
 export const deleteLike = (req, res) => {
-    const { postId } = req.body;
+    //console.log(req.query);
+    const { postId } = req.query;
     const token = req.cookies.accessToken;
 
     if (!token) return res.status(401).json({ message: "Not logged in!" });
@@ -61,7 +62,7 @@ export const deleteLike = (req, res) => {
         postId
       ]
   
-      db.query(q, [values], (err, data) => {
+      db.query(q, [ userInfo.id, postId ], (err, data) => {
         if (err) return res.status(500).json(err);
   
         return res.status(200).json({message: "Like deleted from the post!"});

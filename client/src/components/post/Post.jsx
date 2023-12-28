@@ -32,7 +32,7 @@ const Post = ({ post }) => {
 
     // Mutations - Add like to post and Refetch all likes
     const mutation = useMutation((liked) => {
-        if (liked) return makeRequest.post("/likes", post.id);
+        if (liked) return makeRequest.delete("/likes?postId="+post.id);
         
         return makeRequest.post("/likes", {postId: post.id});
     }, {
@@ -43,7 +43,7 @@ const Post = ({ post }) => {
     })
 
     const handleLike = () => {
-
+        mutation.mutate(data.includes(currentUser.id)); //'includes' returns true or false
     }
 
 
@@ -73,7 +73,7 @@ const Post = ({ post }) => {
 
                 <div className="info">
                     <div className="item" >
-                        {
+                        { isLoading ? "Loading" :
                             data?.includes(currentUser.id) ?
                                 <FavoriteIcon style={{ color: "red" }} onClick={handleLike} />
                                 :
