@@ -5,7 +5,7 @@ export const getRelationships = (req, res) => {
   //console.log(req.query);
   const { followedUserId } = req.query;
 
-  const q = `SELECT followerUserId FROM relationships WHERE followedUserId = ?`;
+  const q = `SELECT followerUserId FROM relationships WHERE followerUserId = ?`;
 
   db.query(q, [followedUserId], (err, data) => {
     if (err) return res.status(500).json(err);

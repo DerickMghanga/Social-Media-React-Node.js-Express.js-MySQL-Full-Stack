@@ -35,6 +35,15 @@ const Profile = () => {
   )
   //console.log(data)
 
+  //fetch following/followers details
+  const { data: relationshipData } = useQuery(['relationship'], () =>
+    makeRequest.get('/relationships?followedUserId='+ userId).then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+  )
+  console.log(relationshipData);
+
   const handleFollow = () => {
     
   }
