@@ -42,7 +42,7 @@ const Profile = () => {
       return res.data;
     })
   )
-  console.log(relationshipData);
+  //console.log(relationshipData);
 
   const queryClient = useQueryClient();
 
@@ -54,7 +54,7 @@ const Profile = () => {
   }, {
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries(['relationship']) //updates the following list
+      queryClient.invalidateQueries(['relationship']) //updates the following/follower list
     },
   })
 
@@ -122,7 +122,8 @@ const Profile = () => {
           </div>
         </div>
 
-        <Posts />
+        {/* IN PROFILE PAGE FETCH CURRENT USERS POSTS ONLY */}
+        <Posts userId={userId} />
       </div>
     </div>
   )
