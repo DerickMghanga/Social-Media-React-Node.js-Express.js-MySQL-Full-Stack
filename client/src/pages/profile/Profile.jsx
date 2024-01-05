@@ -10,7 +10,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Posts from "../../components/Posts/Posts";
 
 import "./profile.scss"
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { makeRequest } from '../../axios';
 import { useLocation } from 'react-router-dom';
 import { useContext } from 'react';
@@ -21,7 +21,7 @@ const Profile = () => {
 
   //  const {id} = useParams();
   //  console.log(id);
- 
+
   const { currentUser } = useContext(AuthContext);   // 'id' is a number
 
   const userId = parseInt(useLocation().pathname.split("/")[2]);
@@ -37,15 +37,30 @@ const Profile = () => {
 
   //fetch following/followers details
   const { data: relationshipData } = useQuery(['relationship'], () =>
-    makeRequest.get('/relationships?followedUserId='+ userId).then((res) => {
+    makeRequest.get('/relationships?followedUserId=' + userId).then((res) => {
       // console.log(res.data);
       return res.data;
     })
   )
   console.log(relationshipData);
 
+  const queryClient = useQueryClient();
+
+  // Mutations
+  const mutation = useMutation((following) => {
+    if (following) return makeRequest.delete("/relationships?userId=" + userId);;
+
+    return makeRequest.post("/relationships", { userId });
+  }, {
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries(['relationship']) //updates the following list
+    },
+  })
+
   const handleFollow = () => {
-    
+    mutation.mutate(relationshipData.includes(currentUser.id)); //'includes' returns true or false
+    // True if 'following'(id included in 'data' array)
   }
 
   return (
@@ -92,10 +107,12 @@ const Profile = () => {
             </div>
 
             {
-              userId === currentUser.id ? 
-              <button>Update</button>
-              : 
-              <button onClick={handleFollow}>Follow</button>
+              userId === currentUser.id ?
+                <button>Update</button>
+                :
+                <button onClick={handleFollow}>
+                  {relationshipData?.includes(currentUser.id) ? "Following" : "Follow"}
+                </button>
             }
           </div>
 
