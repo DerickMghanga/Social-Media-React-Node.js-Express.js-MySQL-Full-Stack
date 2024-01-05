@@ -13,14 +13,17 @@ import "./profile.scss"
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { makeRequest } from '../../axios';
 import { useLocation } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
+import Update from '../../components/update/Update';
 //import { useParams } from 'react-router-dom';
 
 const Profile = () => {
 
   //  const {id} = useParams();
   //  console.log(id);
+
+  const [openUpdate, setOpenUpdate] = useState(false); //update modal
 
   const { currentUser } = useContext(AuthContext);   // 'id' is a number
 
@@ -108,7 +111,7 @@ const Profile = () => {
 
             {
               userId === currentUser.id ?
-                <button>Update</button>
+                <button onClick={()=>setOpenUpdate(true)}>Update</button>
                 :
                 <button onClick={handleFollow}>
                   {relationshipData?.includes(currentUser.id) ? "Following" : "Follow"}
@@ -125,6 +128,8 @@ const Profile = () => {
         {/* IN PROFILE PAGE FETCH CURRENT USERS POSTS ONLY */}
         <Posts userId={userId} />
       </div>
+
+      { openUpdate && <Update setOpenUpdate={setOpenUpdate} /> }
     </div>
   )
 }
