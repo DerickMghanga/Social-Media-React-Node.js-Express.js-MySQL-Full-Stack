@@ -83,7 +83,7 @@ const Post = ({ post }) => {
                         </div>
                     </div>
 
-                    <div style={{cursor: "pointer"}}>
+                    <div style={{cursor: "pointer"}} className="deletePost">
                         <MoreHorizIcon onClick={() => SetMenuOpen(!menuOpen)} />
                         {
                             menuOpen && currentUser.id === post.userId

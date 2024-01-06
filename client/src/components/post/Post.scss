@@ -44,6 +44,24 @@
 
                     }
                 }
+
+                .deletePost{
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+
+                    button{
+                        position: absolute;
+                        top: 25px;
+                        right: 0;
+                        border: none;
+                        background-color: #f0544f;
+                        padding: 3px 6px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        color: white;
+                    }
+                }
             }
 
             .content{
