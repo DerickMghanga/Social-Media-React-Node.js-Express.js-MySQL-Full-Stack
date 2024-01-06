@@ -59,7 +59,7 @@ const Update = ({setOpenUpdate, user}) => {
         coverPic = cover && await upload(cover);
         profilePic = profile && await upload(profile);
 
-        mutation.mutate({...texts, coverPic, profilePic});
+        mutation.mutate({...texts, coverPic, profilePic});  //spread the 'texts'
         setOpenUpdate(false);
     }
 
@@ -70,8 +70,8 @@ const Update = ({setOpenUpdate, user}) => {
         </span>
 
         <form>
-            <input type="file" />
-            <input type="file" />
+            <input type="file" onChange={(e)=>setCoverPic(e.target.files[0])}/>
+            <input type="file" onChange={(e)=>setProfile(e.target.files[0])}/>
             <input type="text" name="name" onChange={handleChange} />
             <input type="text" name="city" onChange={handleChange} />
             <input type="text" name="website" onChange={handleChange} />
