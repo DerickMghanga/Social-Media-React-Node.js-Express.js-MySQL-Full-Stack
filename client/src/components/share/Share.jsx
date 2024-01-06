@@ -33,6 +33,7 @@ const Share = () => {
 
     // Mutations - Add post to DB and Refetch all Posts
     const mutation = useMutation((newPost) => {
+
         return makeRequest.post("/posts", newPost);
     }, {
         onSuccess: () => {
@@ -49,7 +50,9 @@ const Share = () => {
 
         if (file) imgUrl = await upload();  //if user added a file
 
-        mutation.mutate({ desc, img: imgUrl });
+        if (desc.length > 0  || imgUrl.length > 0) { //prevent empty post to be submitted
+            mutation.mutate({ desc, img: imgUrl });
+        }
     }
 
     return (

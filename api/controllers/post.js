@@ -1,7 +1,8 @@
 import { db } from "../connect.js";
 import jwt from "jsonwebtoken";
-import moment from 'moment';
+import moment from "moment";
 
+//fetch all posts
 export const getPosts = (req, res) => {
   //console.log(req.cookies.accessToken);
   const { userId } = req.query;
@@ -17,12 +18,15 @@ export const getPosts = (req, res) => {
 
     //console.log(userId);
 
-    const q = userId !== "undefined" ? `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE p.userId = ? ORDER BY p.createdAt DESC` :
-      `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) LEFT JOIN relationships AS r ON (p.userId = r.followedUserId) WHERE r.followerUserId = ? OR p.userId = ? ORDER BY p.createdAt DESC`;
+    const q =
+      userId !== "undefined"
+        ? `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE p.userId = ? ORDER BY p.createdAt DESC`
+        : `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) LEFT JOIN relationships AS r ON (p.userId = r.followedUserId) WHERE r.followerUserId = ? OR p.userId = ? ORDER BY p.createdAt DESC`;
 
-    const values = userId !== "undefined" ? [userId] : [userInfo.id, userInfo.id];
+    const values =
+      userId !== "undefined" ? [userId] : [userInfo.id, userInfo.id];
 
-    db.query(q, values , (err, data) => {
+    db.query(q, values, (err, data) => {
       if (err) return res.status(500).json(err);
 
       return res.status(200).json(data);
@@ -32,29 +36,56 @@ export const getPosts = (req, res) => {
 
 //Add New Post
 export const addPost = (req, res) => {
-    const {desc, img} = req.body;
-    const token = req.cookies.accessToken;
+  const { desc, img } = req.body;
+  const token = req.cookies.accessToken;
 
-    if (!token) return res.status(401).json({ message: "Not logged in!" });
-  
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, userInfo) => {
-      if (err) return res.status(403).json({ message: "Invalid Token!" });
-  
-      //console.log(userInfo);
-  
-      const q = "INSERT INTO posts (`desc`, `img`, `userId`, `createdAt`) VALUES (?)"
+  if (!token) return res.status(401).json({ message: "Not logged in!" });
 
-      const values = [
-        desc,
-        img,
-        userInfo.id,
-        moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
-      ]
-  
-      db.query(q, [values], (err, data) => {
-        if (err) return res.status(500).json(err);
-  
-        return res.status(200).json({message: "Post has been created!"});
-      });
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, userInfo) => {
+    if (err) return res.status(403).json({ message: "Invalid Token!" });
+
+    //console.log(userInfo);
+
+    const q =
+      "INSERT INTO posts (`desc`, `img`, `userId`, `createdAt`) VALUES (?)";
+
+    const values = [
+      desc,
+      img,
+      userInfo.id,
+      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+    ];
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      return res.status(200).json({ message: "Post has been created!" });
     });
-}
+  });
+};
+
+//Delete Post
+export const deletePost = (req, res) => {
+  const { postId } = req.params;
+  const token = req.cookies.accessToken;
+
+  if (!token) return res.status(401).json({ message: "Not logged in!" });
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, userInfo) => {
+    if (err) return res.status(403).json({ message: "Invalid Token!" });
+
+    //console.log(userInfo);
+
+    const q = "DELETE FROM posts WHERE `id` = ? AND `userId` = ?";
+
+    db.query(q, [postId, userInfo.id], (err, data) => {
+      if (err) return res.status(500).json(err);
+
+      if (data.affectedRows > 0) {  //only deletes our posts
+        return res.status(200).json({ message: "Post has been deleted!" });
+      }
+
+      return res.status(403).json({message: "You can ONLYdelete your post!"})
+    });
+  });
+};

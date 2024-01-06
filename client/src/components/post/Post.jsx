@@ -19,6 +19,8 @@ const Post = ({ post }) => {
     //COMMENTS CONDITION
     const [commentOpen, SetCommentOpen] = useState(false);
 
+    const [menuOpen, SetMenuOpen] = useState(false);
+
     //fetch Likes count
     const { isLoading, error, data } = useQuery(['likes', post.id], () =>
         makeRequest.get("/likes?postId=" + post.id).then((res) => {
@@ -32,9 +34,9 @@ const Post = ({ post }) => {
 
     // Mutations - Add like to post and Refetch all likes
     const mutation = useMutation((liked) => {
-        if (liked) return makeRequest.delete("/likes?postId="+post.id);
-        
-        return makeRequest.post("/likes", {postId: post.id});
+        if (liked) return makeRequest.delete("/likes?postId=" + post.id);
+
+        return makeRequest.post("/likes", { postId: post.id });
     }, {
         onSuccess: () => {
             // Invalidate and refetch
@@ -42,9 +44,25 @@ const Post = ({ post }) => {
         },
     })
 
+    //mutation to delete post and update posts
+    const deletePostMutation = useMutation((postId) => {
+        return makeRequest.delete(`/posts/${postId}`);
+
+    }, {
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries(['posts']) //updates the likes
+        },
+    })
+
     const handleLike = () => {
         mutation.mutate(data.includes(currentUser.id)); //'includes' returns true or false
-                                                        // True if 'liked'(id included in 'data' array)
+        // True if 'liked'(id included in 'data' array)
+    }
+
+    //delete post
+    const handleDelete = () => {
+        deletePostMutation.mutate(post.id);
     }
 
 
@@ -64,7 +82,16 @@ const Post = ({ post }) => {
                             </span>
                         </div>
                     </div>
-                    <MoreHorizIcon />
+
+                    <div style={{cursor: "pointer"}}>
+                        <MoreHorizIcon onClick={() => SetMenuOpen(!menuOpen)} />
+                        {
+                            menuOpen && currentUser.id === post.userId
+                             && <button onClick={handleDelete}>
+                                Delete
+                            </button>
+                        }
+                    </div>
                 </div>
 
                 <div className="content">
@@ -74,7 +101,7 @@ const Post = ({ post }) => {
 
                 <div className="info">
                     <div className="item" >
-                        { isLoading ? "Loading" :
+                        {isLoading ? "Loading" :
                             data?.includes(currentUser.id) ?
                                 <FavoriteIcon style={{ color: "red" }} onClick={handleLike} />
                                 :

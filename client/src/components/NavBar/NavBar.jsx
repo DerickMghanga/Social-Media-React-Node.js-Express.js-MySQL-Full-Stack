@@ -22,7 +22,7 @@ const NavBar = () => {
 
   //get user info after login
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser.profilePic);
+  //console.log(currentUser.profilePic);
 
   return (
     <div className='navbar'>
