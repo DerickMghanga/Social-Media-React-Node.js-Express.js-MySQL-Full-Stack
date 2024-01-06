@@ -27,7 +27,7 @@ const LeftBar = () => {
         {/* FIRST CONTAINER SECTION */}
         <div className="menu">
           <div className="user">
-            <img src={currentUser?.profilePic} alt="" />
+            <img src={`http://localhost:8800/${currentUser?.profilePic}`} alt="" />
             <span>{currentUser?.name}</span>
           </div>
 
