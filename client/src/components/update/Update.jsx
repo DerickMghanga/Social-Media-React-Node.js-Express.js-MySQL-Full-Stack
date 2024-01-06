@@ -52,12 +52,12 @@ const Update = ({setOpenUpdate, user}) => {
     const handleSubmit = async(e) => {
         e.preventDefault();
 
-        let coverPic = user.coverPic;
-        let profilePic = user.profilePic;
+        let coverPic;
+        let profilePic;
 
         //if a file is selected update it
-        coverPic = cover && await upload(cover);
-        profilePic = profile && await upload(profile);
+        coverPic = cover ? await upload(cover) : user.coverPic;
+        profilePic = profile ? await upload(profile) : user.profilePic;
 
         mutation.mutate({...texts, coverPic, profilePic});  //spread the 'texts'
         setOpenUpdate(false);

@@ -23,7 +23,7 @@ export const getUser = (req, res) => {
 export const updateUser = (req, res) => {
   const token = req.cookies.accessToken;
 
-  console.log(req.body);
+  //console.log(req.body);
   const { name, city, website, coverPic, profilePic } = req.body;
 
   if (!token) return res.status(401).json({ message: "Not Authenticated" });
